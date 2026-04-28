@@ -12,15 +12,21 @@ Data is fetched directly from your Home Assistant instance via Nabu Casa Cloud.
 
 ## Sensors displayed
 
-| Label              | Entity                                   |
-|--------------------|------------------------------------------|
-| Inv West AC Power  | `sensor.solaredge_i1_ac_power`           |
-| Inv East AC Power  | `sensor.solaredge_i3_ac_power`           |
-| SoE Batt 1         | `sensor.solaredge_b1_state_of_energy`    |
-| SoE Batt 2         | `sensor.solaredge_i3_b1_state_of_energy` |
+The watch app shows two vertically-paged 24h line charts:
 
-The two AC power sensors are shown as instantaneous values formatted `xx.xxkW`.
-Both battery State-of-Energy sensors are plotted on a single 24-hour line chart.
+**Battery State of Energy (%)**
+- `sensor.solaredge_b1_state_of_energy`        — Batt 1
+- `sensor.solaredge_i3_b1_state_of_energy`     — Batt 2
+
+**Power (kW)**
+- `sensor.solaredgecloud_solar_power`          — Solar
+- `sensor.solaredgecloud_power_consumption`    — Consumption
+- `sensor.solaredgecloud_grid_power`           — Grid
+
+The watch-face complication shows instantaneous AC power and battery SoE from:
+- `sensor.solaredge_i1_ac_power` (Inv West)
+- `sensor.solaredge_i3_ac_power` (Inv East)
+- `sensor.solaredge_b1_state_of_energy`, `sensor.solaredge_i3_b1_state_of_energy`
 
 ## Requirements
 

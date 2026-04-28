@@ -123,16 +123,37 @@ actor HAClient {
             let arrays = try decoder().decode([[HAHistoryPoint]].self, from: data)
             var b1: [HistorySeries.Point] = []
             var b2: [HistorySeries.Point] = []
+            var solar: [HistorySeries.Point] = []
+            var cons: [HistorySeries.Point] = []
+            var grid: [HistorySeries.Point] = []
             for series in arrays {
                 guard let first = series.first, let eid = first.entity_id else { continue }
+                let scale: Double = {
+                    switch eid {
+                    case AppConfig.solarPowerEntity,
+                         AppConfig.consumptionEntity,
+                         AppConfig.gridPowerEntity:
+                        // Heuristic: assume W if any sample > 100, else already kW
+                        let anyLarge = series.contains { ($0.doubleValue.map { abs($0) } ?? 0) > 100 }
+                        return anyLarge ? 1.0 / 1000.0 : 1.0
+                    default:
+                        return 1.0
+                    }
+                }()
                 let mapped: [HistorySeries.Point] = series.compactMap { p in
                     guard let t = p.last_changed, let v = p.doubleValue else { return nil }
-                    return .init(t: t, v: v)
+                    return .init(t: t, v: v * scale)
                 }
-                if eid == AppConfig.batt1SoEEntity { b1 = mapped }
-                else if eid == AppConfig.batt2SoEEntity { b2 = mapped }
+                switch eid {
+                case AppConfig.batt1SoEEntity: b1 = mapped
+                case AppConfig.batt2SoEEntity: b2 = mapped
+                case AppConfig.solarPowerEntity: solar = mapped
+                case AppConfig.consumptionEntity: cons = mapped
+                case AppConfig.gridPowerEntity: grid = mapped
+                default: break
+                }
             }
-            return HistorySeries(batt1: b1, batt2: b2)
+            return HistorySeries(batt1: b1, batt2: b2, solar: solar, consumption: cons, grid: grid)
         } catch let e as HAError { throw e }
         catch let e as DecodingError { throw HAError.decoding(e) }
         catch { throw HAError.transport(error) }

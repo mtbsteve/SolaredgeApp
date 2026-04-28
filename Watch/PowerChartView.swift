@@ -1,13 +1,13 @@
 import SwiftUI
 import Charts
 
-struct ChartView: View {
+struct PowerChartView: View {
     @EnvironmentObject var store: DataStore
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text("Battery SoE — 24h")
+                Text("Power — 24h (kW)")
                     .font(.caption2).foregroundStyle(.secondary)
                 Spacer()
                 Button { Task { await store.refresh() } } label: {
@@ -17,24 +17,29 @@ struct ChartView: View {
                 .disabled(store.isLoading)
             }
 
-            if store.history.batt1.isEmpty && store.history.batt2.isEmpty {
+            let h = store.history
+            if h.solar.isEmpty && h.consumption.isEmpty && h.grid.isEmpty {
                 ContentUnavailableView("No history", systemImage: "chart.xyaxis.line")
             } else {
                 Chart {
-                    ForEach(store.history.batt1, id: \.t) { p in
-                        LineMark(x: .value("t", p.t), y: .value("SoE", p.v))
-                            .foregroundStyle(by: .value("series", "Batt 1"))
+                    ForEach(h.solar, id: \.t) { p in
+                        LineMark(x: .value("t", p.t), y: .value("kW", p.v))
+                            .foregroundStyle(by: .value("series", "Solar"))
                     }
-                    ForEach(store.history.batt2, id: \.t) { p in
-                        LineMark(x: .value("t", p.t), y: .value("SoE", p.v))
-                            .foregroundStyle(by: .value("series", "Batt 2"))
+                    ForEach(h.consumption, id: \.t) { p in
+                        LineMark(x: .value("t", p.t), y: .value("kW", p.v))
+                            .foregroundStyle(by: .value("series", "Cons."))
+                    }
+                    ForEach(h.grid, id: \.t) { p in
+                        LineMark(x: .value("t", p.t), y: .value("kW", p.v))
+                            .foregroundStyle(by: .value("series", "Grid"))
                     }
                 }
                 .chartForegroundStyleScale([
-                    "Batt 1": .green,
-                    "Batt 2": .blue
+                    "Solar": .yellow,
+                    "Cons.": .red,
+                    "Grid": .cyan
                 ])
-                .chartYScale(domain: 0...100)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .hour, count: 6)) { _ in
                         AxisGridLine()
@@ -42,7 +47,7 @@ struct ChartView: View {
                     }
                 }
                 .chartYAxis {
-                    AxisMarks(values: [0, 50, 100]) { _ in
+                    AxisMarks { _ in
                         AxisGridLine()
                         AxisValueLabel()
                     }
