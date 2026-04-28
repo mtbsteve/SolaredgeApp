@@ -46,6 +46,8 @@ struct ComplicationView: View {
     @Environment(\.widgetFamily) var family
     let entry: SolarEntry
 
+    private static let maxKW: Double = 10
+
     private var totalKW: Double {
         (entry.snapshot.invWestKW ?? 0) + (entry.snapshot.invEastKW ?? 0)
     }
@@ -53,28 +55,37 @@ struct ComplicationView: View {
     var body: some View {
         switch family {
         case .accessoryInline:
-            Text("☀︎ \(fmtKW(totalKW))")
+            Text("Solar \(fmtKW(totalKW))")
+
         case .accessoryCircular:
-            ZStack {
-                AccessoryWidgetBackground()
-                VStack(spacing: 0) {
-                    Image(systemName: "sun.max.fill").font(.caption2)
-                    Text(fmtKW(totalKW)).font(.system(size: 12, weight: .semibold).monospacedDigit())
-                }
+            Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
+                Text("kW")
+            } currentValueLabel: {
+                Text(fmtNumber(totalKW))
+                    .font(.system(.body, design: .rounded).weight(.semibold).monospacedDigit())
             }
+            .gaugeStyle(.accessoryCircular)
+            .tint(.yellow)
+
         case .accessoryCorner:
             Text(fmtKW(totalKW))
                 .font(.system(.caption, design: .rounded).monospacedDigit())
                 .widgetCurvesContent()
+                .widgetLabel("Solar")
+
         case .accessoryRectangular:
-            VStack(alignment: .leading, spacing: 1) {
-                HStack { Image(systemName: "sun.max.fill"); Text("Solaredge").font(.caption2) }
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 4) {
+                    Image(systemName: "sun.max.fill").foregroundStyle(.yellow)
+                    Text("SolarEdge").font(.caption2.weight(.semibold))
+                }
                 Text("W \(fmtKW(entry.snapshot.invWestKW))   E \(fmtKW(entry.snapshot.invEastKW))")
                     .font(.system(.caption2, design: .rounded).monospacedDigit())
                 Text("B1 \(fmtPct(entry.snapshot.batt1SoE))  B2 \(fmtPct(entry.snapshot.batt2SoE))")
                     .font(.system(.caption2, design: .rounded).monospacedDigit())
                     .foregroundStyle(.secondary)
             }
+
         default:
             Text(fmtKW(totalKW))
         }
@@ -82,7 +93,11 @@ struct ComplicationView: View {
 
     private func fmtKW(_ v: Double?) -> String {
         guard let v else { return "—" }
-        return String(format: "%.2fkW", v)
+        return String(format: "%.2f kW", v)
+    }
+    private func fmtNumber(_ v: Double?) -> String {
+        guard let v else { return "—" }
+        return String(format: "%.1f", v)
     }
     private func fmtPct(_ v: Double?) -> String {
         guard let v else { return "—" }

@@ -5,7 +5,11 @@ struct ChartView: View {
     @EnvironmentObject var store: DataStore
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("SolarEdge Monitor")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .center)
             HStack {
                 Text("Battery SoE — 24h")
                     .font(.caption2).foregroundStyle(.secondary)
