@@ -3,13 +3,9 @@ import WatchKit
 
 @main
 struct SolaredgeWatchApp: App {
+    @WKApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = DataStore.shared
     @StateObject private var session = WatchSessionManager.shared
-    @Environment(\.scenePhase) private var scenePhase
-
-    init() {
-        BackgroundRefresh.scheduleNext()
-    }
 
     var body: some Scene {
         WindowGroup {
@@ -19,11 +15,8 @@ struct SolaredgeWatchApp: App {
                 .onAppear {
                     session.activate()
                     Task { await store.refresh() }
+                    BackgroundRefresh.scheduleNext()
                 }
-        }
-        .backgroundTask(.appRefresh("solaredge.refresh")) {
-            await DataStore.shared.refresh()
-            BackgroundRefresh.scheduleNext()
         }
     }
 }
