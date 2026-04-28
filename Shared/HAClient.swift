@@ -103,7 +103,10 @@ actor HAClient {
         let iso = ISO8601DateFormatter()
         iso.formatOptions = [.withInternetDateTime]
         let startStr = iso.string(from: start)
-        let entities = "\(AppConfig.batt1SoEEntity),\(AppConfig.batt2SoEEntity)"
+        let entities = AppConfig.allEntities
+            .filter { $0 != AppConfig.invWestEntity && $0 != AppConfig.invEastEntity }
+            .joined(separator: ",")
+        // Note: invWest/invEast are excluded from history (used only for snapshot/complication).
         let req = try request(
             path: "/api/history/period/\(startStr)",
             query: [

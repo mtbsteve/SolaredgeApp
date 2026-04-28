@@ -34,8 +34,11 @@ struct HistorySeries: Codable, Equatable {
     }
     var batt1: [Point]
     var batt2: [Point]
+    var solar: [Point]
+    var consumption: [Point]
+    var grid: [Point]
 
-    static let empty = HistorySeries(batt1: [], batt2: [])
+    static let empty = HistorySeries(batt1: [], batt2: [], solar: [], consumption: [], grid: [])
 }
 
 struct AnyCodable: Codable {

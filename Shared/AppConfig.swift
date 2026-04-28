@@ -10,8 +10,13 @@ enum AppConfig {
     static let batt1SoEEntity = "sensor.solaredge_b1_state_of_energy"
     static let batt2SoEEntity = "sensor.solaredge_i3_b1_state_of_energy"
 
+    static let solarPowerEntity = "sensor.solaredgecloud_solar_power"
+    static let consumptionEntity = "sensor.solaredgecloud_power_consumption"
+    static let gridPowerEntity = "sensor.solaredgecloud_grid_power"
+
     static var allEntities: [String] {
-        [invWestEntity, invEastEntity, batt1SoEEntity, batt2SoEEntity]
+        [invWestEntity, invEastEntity, batt1SoEEntity, batt2SoEEntity,
+         solarPowerEntity, consumptionEntity, gridPowerEntity]
     }
 
     static let refreshInterval: TimeInterval = 5 * 60
