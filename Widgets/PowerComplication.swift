@@ -8,10 +8,8 @@ struct SolarEntry: TimelineEntry {
 
 struct SolarProvider: TimelineProvider {
     func placeholder(in context: Context) -> SolarEntry {
-        // Distinctive sentinel value — if you see 9.99 in the complication,
-        // the new code is rendering but loadCached() returned nil.
         SolarEntry(date: Date(), snapshot: SensorSnapshot(
-            invWestKW: 9.99, invEastKW: 0, batt1SoE: 99, batt2SoE: 99, fetchedAt: Date()))
+            invWestKW: 1.23, invEastKW: 0.98, batt1SoE: 72, batt2SoE: 65, fetchedAt: Date()))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SolarEntry) -> Void) {
@@ -63,23 +61,28 @@ struct ComplicationView: View {
     var body: some View {
         switch family {
         case .accessoryInline:
-            Text("INLINE OK")
+            Text("Solar \(fmtKW(totalKW))")
+                .containerBackground(.fill.tertiary, for: .widget)
 
         case .accessoryCircular:
-            // MINIMAL DIAGNOSTIC with backing well + container background.
             ZStack {
                 AccessoryWidgetBackground()
-                Text("42")
-                    .font(.system(size: 24, weight: .black, design: .rounded))
-                    .foregroundStyle(.white)
+                Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
+                    Text("kW")
+                } currentValueLabel: {
+                    Text(fmtNumber(totalKW))
+                        .font(.system(.body, design: .rounded).weight(.bold).monospacedDigit())
+                }
+                .gaugeStyle(.accessoryCircular)
+                .tint(Gradient(colors: [.orange, .yellow]))
             }
             .containerBackground(.fill.tertiary, for: .widget)
 
         case .accessoryCorner:
-            Text("99")
-                .font(.system(size: 22, weight: .black, design: .rounded))
+            Text(fmtNumber(totalKW))
+                .font(.system(size: 18, weight: .bold, design: .rounded).monospacedDigit())
                 .foregroundStyle(.yellow)
-                .widgetLabel("CORNER OK")
+                .widgetLabel("Solar \(fmtKW(totalKW))")
                 .containerBackground(.fill.tertiary, for: .widget)
 
         case .accessoryRectangular:
@@ -94,9 +97,11 @@ struct ComplicationView: View {
                     .font(.system(.caption2, design: .rounded).monospacedDigit())
                     .foregroundStyle(.secondary)
             }
+            .containerBackground(.fill.tertiary, for: .widget)
 
         default:
             Text(fmtKW(totalKW))
+                .containerBackground(.fill.tertiary, for: .widget)
         }
     }
 
