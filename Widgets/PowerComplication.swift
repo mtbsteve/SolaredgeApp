@@ -66,15 +66,21 @@ struct ComplicationView: View {
             Text("INLINE OK")
 
         case .accessoryCircular:
-            // MINIMAL DIAGNOSTIC — if this doesn't show "OK 42", the binary is stale.
-            Text("OK\n42")
-                .font(.system(.body, design: .rounded).weight(.bold))
-                .multilineTextAlignment(.center)
+            // MINIMAL DIAGNOSTIC with backing well + container background.
+            ZStack {
+                AccessoryWidgetBackground()
+                Text("42")
+                    .font(.system(size: 24, weight: .black, design: .rounded))
+                    .foregroundStyle(.white)
+            }
+            .containerBackground(.fill.tertiary, for: .widget)
 
         case .accessoryCorner:
             Text("99")
-                .font(.system(.title3, design: .rounded).weight(.bold))
+                .font(.system(size: 22, weight: .black, design: .rounded))
+                .foregroundStyle(.yellow)
                 .widgetLabel("CORNER OK")
+                .containerBackground(.fill.tertiary, for: .widget)
 
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 2) {
