@@ -57,6 +57,11 @@ struct ChartView: View {
             if let err = store.lastError {
                 Text(err).font(.caption2).foregroundStyle(.red).lineLimit(2)
             }
+
+            // Diagnostic — remove once complication is verified.
+            Text("widget ran: \(AppConfig.sharedDefaults.string(forKey: "diag.widgetRanAt") ?? "never")")
+                .font(.system(size: 8))
+                .foregroundStyle(.secondary)
         }
         .padding(.horizontal, 4)
     }

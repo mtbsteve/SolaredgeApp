@@ -24,8 +24,12 @@ struct SolarProvider: TimelineProvider {
     }
 
     private func loadCached() -> SensorSnapshot? {
-        guard let d = AppConfig.sharedDefaults.data(forKey: "cache.snapshot") else { return nil }
-        return try? JSONDecoder().decode(SensorSnapshot.self, from: d)
+        let d = AppConfig.sharedDefaults
+        print("Widget read diag.probe = \(d.string(forKey: "diag.probe") ?? "NIL")")
+        let stamp = ISO8601DateFormatter().string(from: Date())
+        d.set(stamp, forKey: "diag.widgetRanAt")
+        guard let data = d.data(forKey: "cache.snapshot") else { return nil }
+        return try? JSONDecoder().decode(SensorSnapshot.self, from: data)
     }
 }
 

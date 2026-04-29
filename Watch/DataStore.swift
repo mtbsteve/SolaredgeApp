@@ -32,6 +32,9 @@ final class DataStore: ObservableObject {
         let d = AppConfig.sharedDefaults
         if let sd = try? JSONEncoder().encode(s) { d.set(sd, forKey: "cache.snapshot") }
         if let hd = try? JSONEncoder().encode(h) { d.set(hd, forKey: "cache.history") }
+        let probe = AppConfig.sharedDefaults
+        probe.set("watch-wrote-this", forKey: "diag.probe")
+        print("DataStore wrote to suite: \(probe.dictionaryRepresentation().keys.contains("diag.probe"))")
     }
 
     private func loadCached() {
