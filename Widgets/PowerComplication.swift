@@ -8,8 +8,10 @@ struct SolarEntry: TimelineEntry {
 
 struct SolarProvider: TimelineProvider {
     func placeholder(in context: Context) -> SolarEntry {
+        // Distinctive sentinel value — if you see 9.99 in the complication,
+        // the new code is rendering but loadCached() returned nil.
         SolarEntry(date: Date(), snapshot: SensorSnapshot(
-            invWestKW: 1.23, invEastKW: 0.98, batt1SoE: 72, batt2SoE: 65, fetchedAt: Date()))
+            invWestKW: 9.99, invEastKW: 0, batt1SoE: 99, batt2SoE: 99, fetchedAt: Date()))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SolarEntry) -> Void) {
