@@ -79,8 +79,8 @@ struct ComplicationView: View {
             .containerBackground(.fill.tertiary, for: .widget)
 
         case .accessoryCorner:
-            Text(fmtNumber(totalKW))
-                .font(.system(size: 18, weight: .bold, design: .rounded).monospacedDigit())
+            Image(systemName: "sun.max.fill")
+                .font(.system(size: 18, weight: .bold))
                 .foregroundStyle(.yellow)
                 .widgetLabel("Solar \(fmtKW(totalKW))")
                 .containerBackground(.fill.tertiary, for: .widget)
