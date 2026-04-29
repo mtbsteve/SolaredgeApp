@@ -58,20 +58,31 @@ struct ComplicationView: View {
             Text("Solar \(fmtKW(totalKW))")
 
         case .accessoryCircular:
-            Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
-                Text("kW")
-            } currentValueLabel: {
-                Text(fmtNumber(totalKW))
-                    .font(.system(.body, design: .rounded).weight(.semibold).monospacedDigit())
+            ZStack {
+                AccessoryWidgetBackground()
+                Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
+                    EmptyView()
+                } currentValueLabel: {
+                    Text(fmtNumber(totalKW))
+                        .font(.system(.body, design: .rounded).weight(.semibold).monospacedDigit())
+                } minimumValueLabel: {
+                    Text("0")
+                } maximumValueLabel: {
+                    Text("\(Int(Self.maxKW))")
+                }
+                .gaugeStyle(.accessoryCircular)
+                .tint(Gradient(colors: [.orange, .yellow]))
             }
-            .gaugeStyle(.accessoryCircular)
-            .tint(.yellow)
+            .widgetLabel("kW")
 
         case .accessoryCorner:
-            Text(fmtKW(totalKW))
-                .font(.system(.caption, design: .rounded).monospacedDigit())
-                .widgetCurvesContent()
-                .widgetLabel("Solar")
+            // Corner content = small icon at the bezel; widgetLabel = curved text.
+            Image(systemName: "sun.max.fill")
+                .foregroundStyle(.yellow)
+                .widgetLabel {
+                    Text("Solar \(fmtKW(totalKW))")
+                        .monospacedDigit()
+                }
 
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 2) {
