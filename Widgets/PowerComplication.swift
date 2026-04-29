@@ -36,13 +36,15 @@ struct SolarProvider: TimelineProvider {
 }
 
 struct PowerComplication: Widget {
-    let kind = "SolaredgePowerComplication"
+    // New kind forces Carousel to treat this as a brand-new widget,
+    // evicting any cached tile from the previous identifier.
+    let kind = "SolaredgePower.v2"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: SolarProvider()) { entry in
             ComplicationView(entry: entry)
         }
-        .configurationDisplayName("Solaredge Power")
+        .configurationDisplayName("Solar Power v2")
         .description("Inverter AC power on the watch face.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner])
     }
