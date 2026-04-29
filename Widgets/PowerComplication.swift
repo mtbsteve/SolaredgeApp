@@ -64,31 +64,27 @@ struct ComplicationView: View {
             Text("Solar \(fmtKW(totalKW))")
 
         case .accessoryCircular:
-            ZStack {
-                AccessoryWidgetBackground()
-                Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
-                    EmptyView()
-                } currentValueLabel: {
-                    Text(fmtNumber(totalKW))
-                        .font(.system(.body, design: .rounded).weight(.semibold).monospacedDigit())
-                } minimumValueLabel: {
-                    Text("0")
-                } maximumValueLabel: {
-                    Text("\(Int(Self.maxKW))")
-                }
-                .gaugeStyle(.accessoryCircular)
-                .tint(Gradient(colors: [.orange, .yellow]))
+            Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
+                Text("kW")
+            } currentValueLabel: {
+                Text(fmtNumber(totalKW))
+                    .font(.system(.body, design: .rounded).weight(.bold).monospacedDigit())
             }
-            .widgetLabel("kW")
+            .gaugeStyle(.accessoryCircular)
+            .tint(Gradient(colors: [.orange, .yellow]))
 
         case .accessoryCorner:
-            // Corner content = small icon at the bezel; widgetLabel = curved text.
-            Image(systemName: "sun.max.fill")
-                .foregroundStyle(.yellow)
-                .widgetLabel {
-                    Text("Solar \(fmtKW(totalKW))")
-                        .monospacedDigit()
-                }
+            // Gauge as corner content (renders as a circular capacity arc),
+            // curved bezel text via widgetLabel(String).
+            Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
+                Image(systemName: "sun.max.fill")
+            } currentValueLabel: {
+                Text(fmtNumber(totalKW))
+                    .font(.system(.body, design: .rounded).weight(.bold).monospacedDigit())
+            }
+            .gaugeStyle(.accessoryCircularCapacity)
+            .tint(.yellow)
+            .widgetLabel("Solar \(fmtKW(totalKW))")
 
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 2) {
