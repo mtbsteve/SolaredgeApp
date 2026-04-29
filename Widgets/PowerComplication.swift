@@ -61,30 +61,18 @@ struct ComplicationView: View {
     var body: some View {
         switch family {
         case .accessoryInline:
-            Text("Solar \(fmtKW(totalKW))")
+            Text("INLINE OK")
 
         case .accessoryCircular:
-            Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
-                Text("kW")
-            } currentValueLabel: {
-                Text(fmtNumber(totalKW))
-                    .font(.system(.body, design: .rounded).weight(.bold).monospacedDigit())
-            }
-            .gaugeStyle(.accessoryCircular)
-            .tint(Gradient(colors: [.orange, .yellow]))
+            // MINIMAL DIAGNOSTIC — if this doesn't show "OK 42", the binary is stale.
+            Text("OK\n42")
+                .font(.system(.body, design: .rounded).weight(.bold))
+                .multilineTextAlignment(.center)
 
         case .accessoryCorner:
-            // Gauge as corner content (renders as a circular capacity arc),
-            // curved bezel text via widgetLabel(String).
-            Gauge(value: min(max(totalKW, 0), Self.maxKW), in: 0...Self.maxKW) {
-                Image(systemName: "sun.max.fill")
-            } currentValueLabel: {
-                Text(fmtNumber(totalKW))
-                    .font(.system(.body, design: .rounded).weight(.bold).monospacedDigit())
-            }
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(.yellow)
-            .widgetLabel("Solar \(fmtKW(totalKW))")
+            Text("99")
+                .font(.system(.title3, design: .rounded).weight(.bold))
+                .widgetLabel("CORNER OK")
 
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 2) {
