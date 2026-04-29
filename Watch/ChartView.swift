@@ -11,7 +11,7 @@ struct ChartView: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, alignment: .center)
             HStack {
-                Text("Battery SoE — 24h")
+                Text("Battery SoE — 24h (%)")
                     .font(.caption2).foregroundStyle(.secondary)
                 Spacer()
                 Button { Task { await store.refresh() } } label: {

@@ -52,7 +52,7 @@ struct ComplicationView: View {
     @Environment(\.widgetFamily) var family
     let entry: SolarEntry
 
-    private static let maxKW: Double = 10
+    private static let maxKW: Double = 14
 
     private var totalKW: Double {
         (entry.snapshot.invWestKW ?? 0) + (entry.snapshot.invEastKW ?? 0)
@@ -74,7 +74,7 @@ struct ComplicationView: View {
                         .font(.system(.body, design: .rounded).weight(.bold).monospacedDigit())
                 }
                 .gaugeStyle(.accessoryCircular)
-                .tint(Gradient(colors: [.orange, .yellow]))
+                .tint(Gradient(colors: [.red, .orange, .yellow, .green]))
             }
             .containerBackground(.fill.tertiary, for: .widget)
 
