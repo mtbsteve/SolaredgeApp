@@ -14,19 +14,35 @@ Data is fetched directly from your Home Assistant instance via Nabu Casa Cloud.
 
 The watch app shows two vertically-paged 24h line charts:
 
-**Battery State of Energy (%)**
-- `sensor.solaredge_b1_state_of_energy`        — Batt 1
-- `sensor.solaredge_i3_b1_state_of_energy`     — Batt 2
+**Battery State of Energy (%)** — up to four configurable slots, only configured slots are rendered.
 
-**Power (kW)**
-- `sensor.solaredgecloud_solar_power`          — Solar
-- `sensor.solaredgecloud_power_consumption`    — Consumption
-- `sensor.solaredgecloud_grid_power`           — Grid
+**Power (kW)** — Solar, Consumption, Grid (one entity each).
 
-The watch-face complication shows instantaneous AC power and battery SoE from:
-- `sensor.solaredge_i1_ac_power` (Inv West)
-- `sensor.solaredge_i3_ac_power` (Inv East)
-- `sensor.solaredge_b1_state_of_energy`, `sensor.solaredge_i3_b1_state_of_energy`
+The watch-face complication shows the instantaneous solar power on the circular, inline,
+corner, and rectangular families. The rectangular family additionally lists the
+configured battery slots (e.g. `B1 72%  B2 65%`).
+
+### Configurable HA entities
+
+All sensor entity IDs are configured in the iOS companion app under **Power Entities** and
+**Battery SoE Entities**. The three power entities are prepopulated with the
+SolarEdge Cloud HA integration defaults; override them if your install names them
+differently.
+
+| Role          | Default                                       |
+|---------------|-----------------------------------------------|
+| Solar power   | `sensor.solaredgecloud_solar_power`           |
+| Grid power    | `sensor.solaredgecloud_grid_power`            |
+| Consumption   | `sensor.solaredgecloud_power_consumption`     |
+| Batt 1–4 SoE  | *(empty — installation-specific)*             |
+
+Battery SoE entities come from a Home Assistant integration that pulls data over the
+SolarEdge Modbus interface, and their entity IDs depend on how the installation was named.
+Enter one entity ID per battery stack; leave unused slots empty (most installs have one or
+two stacks). The app is sized for up to four.
+
+The **Verify entities** button pings `/api/states/<id>` for every non-empty field and shows
+a per-row badge: ✓ exists, ✗ missing (HTTP 404), ⚠ network/auth error.
 
 ## Requirements
 
@@ -69,10 +85,15 @@ open SolaredgeApp.xcodeproj
 1. Build & run the **SolaredgeApp** scheme on your iPhone.
 2. Enter your Nabu Casa URL (e.g. `https://abcdef1234.ui.nabu.casa`) and your Long-Lived
    Access Token. Tap **Test connection** — you should see live values.
-3. Tap **Save & send to Watch**. The config is delivered via WatchConnectivity (instant if
-   the watch app is open, otherwise queued).
-4. Build & run the **SolaredgeWatch** scheme on your Apple Watch.
-5. Add the **Solaredge Power** complication to a watch face (long-press face → Edit →
+3. Under **Power Entities**, accept the prepopulated defaults or override them to match the
+   entity IDs in your Home Assistant.
+4. Under **Battery SoE Entities**, enter one entity ID per battery stack (1–4). Leave
+   unused slots empty.
+5. Tap **Verify entities** to confirm each ID exists in HA (per-row ✓/✗ badge).
+6. Tap **Save & send to Watch**. The full config (URL, token, entity IDs) is delivered via
+   WatchConnectivity (instant if the watch app is open, otherwise queued).
+7. Build & run the **SolaredgeWatch** scheme on your Apple Watch.
+8. Add the **Solaredge Power** complication to a watch face (long-press face → Edit →
    Complications).
 
 ## Refresh cadence
@@ -90,20 +111,20 @@ open SolaredgeApp.xcodeproj
 
 ```
 Shared/
-  AppConfig.swift       — bundle IDs, entity IDs, app group, refresh interval
-  HAModels.swift        — HA REST decoding, snapshot & history value types
-  HAClient.swift        — async/await client; fetchSnapshot + fetchHistory
+  AppConfig.swift       — bundle IDs, entity-ID storage + defaults, app group, refresh interval
+  HAModels.swift        — HA REST decoding; SensorSnapshot.batterySoE / HistorySeries.batteries are length-4 slot arrays
+  HAClient.swift        — async/await client; fetchSnapshot + fetchHistory + entityExists
   KeychainStore.swift   — token persistence (shared keychain group)
 iOS/
   SolaredgeAppApp.swift — App entry (companion)
-  ContentView.swift     — setup form (URL + token + test)
-  PhoneSessionManager.swift — WCSession sender
+  ContentView.swift     — setup form (URL + token + entity fields + Verify)
+  PhoneSessionManager.swift — WCSession sender (URL + token + entities dict)
 Watch/
   SolaredgeWatchApp.swift — App entry (watch)
   RootView.swift        — values + chart tabs
-  ChartView.swift       — Swift Charts 24h line chart
+  ChartView.swift       — Swift Charts 24h line chart, dynamic per-slot batteries
   DataStore.swift       — @MainActor ObservableObject; refresh + cache
-  WatchSessionManager.swift — WCSession receiver, persists URL+token
+  WatchSessionManager.swift — WCSession receiver, persists URL + token + entity IDs
   BackgroundRefresh.swift — schedules WKApplication background refresh
 Widgets/
   SolaredgeWidgetsBundle.swift — WidgetBundle entry
@@ -123,9 +144,12 @@ group** for the access token.
 
 ## Known limitations
 
-- The kW heuristic in `HAClient.fetchSnapshot()` assumes raw values >100 are watts. If your
-  HA inverter sensors already report kW (or use a different unit), adjust `kw(_:)` in
-  `Shared/HAClient.swift`.
+- The kW heuristic in `HAClient.fetchSnapshot()` and `HAClient.fetchHistory()` assumes raw
+  values >100 are watts. If your HA power sensors already report kW (or use a different
+  unit), adjust the `kw(_:)` / scale logic in `Shared/HAClient.swift`.
+- The app supports up to four battery SoE slots. Installations with more stacks would
+  require bumping `AppConfig.batterySlotCount` and adding matching fields in the iOS
+  settings form.
 - 24-hour history can be a sizeable JSON payload over cellular. The request uses
   `minimal_response` and `no_attributes` to keep it small.
 - watchOS background-refresh budgets cap real-world cadence; see "Refresh cadence" above.
