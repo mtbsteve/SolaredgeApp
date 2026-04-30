@@ -4,6 +4,13 @@ import Charts
 struct ChartView: View {
     @EnvironmentObject var store: DataStore
 
+    private static let slotColors: [Color] = [.green, .blue, .orange, .pink]
+
+    private var configuredSlots: [(index: Int, points: [HistorySeries.Point])] {
+        store.history.batteries.enumerated()
+            .compactMap { (i, pts) in pts.isEmpty ? nil : (i, pts) }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("SolarEdge Monitor")
@@ -21,23 +28,21 @@ struct ChartView: View {
                 .disabled(store.isLoading)
             }
 
-            if store.history.batt1.isEmpty && store.history.batt2.isEmpty {
+            if configuredSlots.isEmpty {
                 ContentUnavailableView("No history", systemImage: "chart.xyaxis.line")
             } else {
                 Chart {
-                    ForEach(store.history.batt1, id: \.t) { p in
-                        LineMark(x: .value("t", p.t), y: .value("SoE", p.v))
-                            .foregroundStyle(by: .value("series", "Batt 1"))
-                    }
-                    ForEach(store.history.batt2, id: \.t) { p in
-                        LineMark(x: .value("t", p.t), y: .value("SoE", p.v))
-                            .foregroundStyle(by: .value("series", "Batt 2"))
+                    ForEach(configuredSlots, id: \.index) { slot in
+                        ForEach(slot.points, id: \.t) { p in
+                            LineMark(x: .value("t", p.t), y: .value("SoE", p.v))
+                                .foregroundStyle(by: .value("series", "Batt \(slot.index + 1)"))
+                        }
                     }
                 }
-                .chartForegroundStyleScale([
-                    "Batt 1": .green,
-                    "Batt 2": .blue
-                ])
+                .chartForegroundStyleScale(
+                    domain: configuredSlots.map { "Batt \($0.index + 1)" },
+                    range: configuredSlots.map { Self.slotColors[$0.index % Self.slotColors.count] }
+                )
                 .chartYScale(domain: 0...100)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .hour, count: 6)) { _ in
@@ -60,4 +65,5 @@ struct ChartView: View {
         }
         .padding(.horizontal, 4)
     }
+
 }

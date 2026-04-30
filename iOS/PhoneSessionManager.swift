@@ -15,9 +15,10 @@ final class PhoneSessionManager: NSObject, ObservableObject, WCSessionDelegate {
         s.activate()
     }
 
-    func send(url: String, token: String) {
+    func send(url: String, token: String, entities: [String: String] = [:]) {
         guard let s = session, s.activationState == .activated else { return }
-        let payload: [String: Any] = ["baseURL": url, "token": token]
+        var payload: [String: Any] = ["baseURL": url, "token": token]
+        if !entities.isEmpty { payload["entities"] = entities }
         do {
             try s.updateApplicationContext(payload)
         } catch {

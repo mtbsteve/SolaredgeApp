@@ -16,11 +16,19 @@ final class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
     }
 
     private func apply(_ payload: [String: Any]) {
+        let d = AppConfig.sharedDefaults
         if let url = payload["baseURL"] as? String {
-            AppConfig.sharedDefaults.set(url, forKey: AppConfig.SharedKey.baseURL)
+            d.set(url, forKey: AppConfig.SharedKey.baseURL)
         }
         if let token = payload["token"] as? String, !token.isEmpty {
             try? KeychainStore.saveToken(token)
+        }
+        // Nested dicts come back through WCSession typed as [String: Any]; coerce per-value.
+        if let entities = payload["entities"] as? [String: Any] {
+            for (k, raw) in entities {
+                let v = (raw as? String) ?? (raw as? NSString as String?) ?? ""
+                if v.isEmpty { d.removeObject(forKey: k) } else { d.set(v, forKey: k) }
+            }
         }
         let stamp = ISO8601DateFormatter().string(from: Date())
         DispatchQueue.main.async {

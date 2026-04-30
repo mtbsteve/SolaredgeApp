@@ -18,14 +18,16 @@ struct HAHistoryPoint: Decodable {
 }
 
 struct SensorSnapshot: Codable, Equatable {
-    var invWestKW: Double?
-    var invEastKW: Double?
-    var batt1SoE: Double?
-    var batt2SoE: Double?
+    /// One entry per battery slot (1...AppConfig.batterySlotCount). nil = unconfigured or unreadable.
+    var batterySoE: [Double?]
     var solarPowerKW: Double?
     var fetchedAt: Date
 
-    static let empty = SensorSnapshot(invWestKW: nil, invEastKW: nil, batt1SoE: nil, batt2SoE: nil, solarPowerKW: nil, fetchedAt: .distantPast)
+    static let empty = SensorSnapshot(
+        batterySoE: Array(repeating: nil, count: AppConfig.batterySlotCount),
+        solarPowerKW: nil,
+        fetchedAt: .distantPast
+    )
 }
 
 struct HistorySeries: Codable, Equatable {
@@ -33,13 +35,16 @@ struct HistorySeries: Codable, Equatable {
         let t: Date
         let v: Double
     }
-    var batt1: [Point]
-    var batt2: [Point]
+    /// One series per battery slot (1...AppConfig.batterySlotCount). Empty = unconfigured or no data.
+    var batteries: [[Point]]
     var solar: [Point]
     var consumption: [Point]
     var grid: [Point]
 
-    static let empty = HistorySeries(batt1: [], batt2: [], solar: [], consumption: [], grid: [])
+    static let empty = HistorySeries(
+        batteries: Array(repeating: [], count: AppConfig.batterySlotCount),
+        solar: [], consumption: [], grid: []
+    )
 }
 
 struct AnyCodable: Codable {

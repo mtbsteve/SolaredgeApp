@@ -9,7 +9,10 @@ struct SolarEntry: TimelineEntry {
 struct SolarProvider: TimelineProvider {
     func placeholder(in context: Context) -> SolarEntry {
         SolarEntry(date: Date(), snapshot: SensorSnapshot(
-            invWestKW: 1.23, invEastKW: 0.98, batt1SoE: 72, batt2SoE: 65, solarPowerKW: 2.21, fetchedAt: Date()))
+            batterySoE: [72, 65, nil, nil],
+            solarPowerKW: 2.21,
+            fetchedAt: Date()
+        ))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SolarEntry) -> Void) {
@@ -58,6 +61,13 @@ struct ComplicationView: View {
         entry.snapshot.solarPowerKW ?? 0
     }
 
+    /// "B1 72%  B3 65%" — only configured/non-nil slots, in slot order.
+    private var batterySummary: String {
+        entry.snapshot.batterySoE.enumerated()
+            .compactMap { (i, v) -> String? in v.map { String(format: "B%d %.0f%%", i + 1, $0) } }
+            .joined(separator: "  ")
+    }
+
     var body: some View {
         switch family {
         case .accessoryInline:
@@ -93,9 +103,11 @@ struct ComplicationView: View {
                 }
                 Text("Solar \(fmtKW(entry.snapshot.solarPowerKW))")
                     .font(.system(.body, design: .rounded).weight(.semibold).monospacedDigit())
-                Text("B1 \(fmtPct(entry.snapshot.batt1SoE))  B2 \(fmtPct(entry.snapshot.batt2SoE))")
-                    .font(.system(.caption2, design: .rounded).monospacedDigit())
-                    .foregroundStyle(.secondary)
+                if !batterySummary.isEmpty {
+                    Text(batterySummary)
+                        .font(.system(.caption2, design: .rounded).monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
             }
             .containerBackground(.fill.tertiary, for: .widget)
 
@@ -112,9 +124,5 @@ struct ComplicationView: View {
     private func fmtNumber(_ v: Double?) -> String {
         guard let v else { return "—" }
         return String(format: "%.1f", v)
-    }
-    private func fmtPct(_ v: Double?) -> String {
-        guard let v else { return "—" }
-        return String(format: "%.0f%%", v)
     }
 }
