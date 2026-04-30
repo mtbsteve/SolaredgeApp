@@ -1,4 +1,4 @@
-# SE Monitor for Homeassistant
+# SE Monitor for Apple Watch
 
 Native watchOS app + iOS companion for displaying Solaredge sensor values from
 Home Assistant on Apple Watch, with a 24-hour battery State-of-Energy chart and a
