@@ -1,6 +1,6 @@
-# SE Monitor for HA
+# SE Monitor for Homeassistant
 
-Native watchOS app + iOS companion for displaying solar-photovoltaic sensor values from
+Native watchOS app + iOS companion for displaying Solaredge sensor values from
 Home Assistant on Apple Watch, with a 24-hour battery State-of-Energy chart and a
 watch-face complication. Data is fetched directly from your Home Assistant instance via
 Nabu Casa Cloud.
@@ -16,11 +16,6 @@ Nabu Casa Cloud.
 - **Watch app** runs standalone afterwards. With an iPhone-paired (non-cellular) Watch, it
   uses the iPhone's connection (incl. cellular) when off Wi-Fi; with a cellular Watch it
   works fully on its own.
-
-> The Xcode project is still named `SolaredgeApp` (and the targets `SolaredgeApp`,
-> `SolaredgeWatch`, `SolaredgeWidgets`) for build-system stability — these are internal
-> identifiers and never shown to users. The user-facing display names and all in-app
-> strings use **SE Monitor for HA**.
 
 ## Sensors displayed
 
