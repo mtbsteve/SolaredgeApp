@@ -22,9 +22,10 @@ struct SensorSnapshot: Codable, Equatable {
     var invEastKW: Double?
     var batt1SoE: Double?
     var batt2SoE: Double?
+    var solarPowerKW: Double?
     var fetchedAt: Date
 
-    static let empty = SensorSnapshot(invWestKW: nil, invEastKW: nil, batt1SoE: nil, batt2SoE: nil, fetchedAt: .distantPast)
+    static let empty = SensorSnapshot(invWestKW: nil, invEastKW: nil, batt1SoE: nil, batt2SoE: nil, solarPowerKW: nil, fetchedAt: .distantPast)
 }
 
 struct HistorySeries: Codable, Equatable {

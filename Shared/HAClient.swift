@@ -81,7 +81,8 @@ actor HAClient {
         async let east = fetchState(entityId: AppConfig.invEastEntity)
         async let b1 = fetchState(entityId: AppConfig.batt1SoEEntity)
         async let b2 = fetchState(entityId: AppConfig.batt2SoEEntity)
-        let (w, e, soe1, soe2) = try await (west, east, b1, b2)
+        async let solar = fetchState(entityId: AppConfig.solarPowerEntity)
+        let (w, e, soe1, soe2, sp) = try await (west, east, b1, b2, solar)
 
         // HA reports W; spec wants kW
         func kw(_ s: HAState) -> Double? {
@@ -94,6 +95,7 @@ actor HAClient {
             invEastKW: kw(e),
             batt1SoE: soe1.doubleValue,
             batt2SoE: soe2.doubleValue,
+            solarPowerKW: kw(sp),
             fetchedAt: Date()
         )
     }

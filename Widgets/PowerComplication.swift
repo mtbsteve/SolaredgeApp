@@ -9,7 +9,7 @@ struct SolarEntry: TimelineEntry {
 struct SolarProvider: TimelineProvider {
     func placeholder(in context: Context) -> SolarEntry {
         SolarEntry(date: Date(), snapshot: SensorSnapshot(
-            invWestKW: 1.23, invEastKW: 0.98, batt1SoE: 72, batt2SoE: 65, fetchedAt: Date()))
+            invWestKW: 1.23, invEastKW: 0.98, batt1SoE: 72, batt2SoE: 65, solarPowerKW: 2.21, fetchedAt: Date()))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SolarEntry) -> Void) {
@@ -55,7 +55,7 @@ struct ComplicationView: View {
     private static let maxKW: Double = 14
 
     private var totalKW: Double {
-        (entry.snapshot.invWestKW ?? 0) + (entry.snapshot.invEastKW ?? 0)
+        entry.snapshot.solarPowerKW ?? 0
     }
 
     var body: some View {
@@ -91,8 +91,8 @@ struct ComplicationView: View {
                     Image(systemName: "sun.max.fill").foregroundStyle(.yellow)
                     Text("SolarEdge").font(.caption2.weight(.semibold))
                 }
-                Text("W \(fmtKW(entry.snapshot.invWestKW))   E \(fmtKW(entry.snapshot.invEastKW))")
-                    .font(.system(.caption2, design: .rounded).monospacedDigit())
+                Text("Solar \(fmtKW(entry.snapshot.solarPowerKW))")
+                    .font(.system(.body, design: .rounded).weight(.semibold).monospacedDigit())
                 Text("B1 \(fmtPct(entry.snapshot.batt1SoE))  B2 \(fmtPct(entry.snapshot.batt2SoE))")
                     .font(.system(.caption2, design: .rounded).monospacedDigit())
                     .foregroundStyle(.secondary)
