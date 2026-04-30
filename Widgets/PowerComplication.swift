@@ -41,8 +41,8 @@ struct PowerComplication: Widget {
         StaticConfiguration(kind: kind, provider: SolarProvider()) { entry in
             ComplicationView(entry: entry)
         }
-        .configurationDisplayName("Solar Power v2")
-        .description("Inverter AC power on the watch face.")
+        .configurationDisplayName("Solar Power")
+        .description("Live solar power and battery state of energy on the watch face.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner])
     }
 }
@@ -95,7 +95,7 @@ struct ComplicationView: View {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 4) {
                     Image(systemName: "sun.max.fill").foregroundStyle(.yellow)
-                    Text("SolarEdge").font(.caption2.weight(.semibold))
+                    Text("SE Monitor").font(.caption2.weight(.semibold))
                 }
                 Text("Solar \(fmtKW(entry.snapshot.solarPowerKW))")
                     .font(.system(.body, design: .rounded).weight(.semibold).monospacedDigit())

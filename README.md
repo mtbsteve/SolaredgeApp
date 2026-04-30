@@ -1,14 +1,26 @@
-# SolaredgeApp
+# SE Monitor for HA
 
-Native watchOS app + iOS companion for displaying Home Assistant SolarEdge sensor values
-on Apple Watch, with a 24-hour battery State-of-Energy chart and a watch-face complication.
-Data is fetched directly from your Home Assistant instance via Nabu Casa Cloud.
+Native watchOS app + iOS companion for displaying solar-photovoltaic sensor values from
+Home Assistant on Apple Watch, with a 24-hour battery State-of-Energy chart and a
+watch-face complication. Data is fetched directly from your Home Assistant instance via
+Nabu Casa Cloud.
+
+> **Disclaimer.** SE Monitor for HA is an independent third-party app. It is **not
+> affiliated with, endorsed by, or sponsored by** SolarEdge Technologies, Inc. or the
+> Home Assistant project. "SolarEdge" is a trademark of SolarEdge Technologies, Inc.;
+> the name is used here only to describe the third-party Home Assistant integrations
+> this app reads sensor values from.
 
 - **iOS companion** is for one-time setup only (paste Home Assistant URL + Long-Lived Access
   Token, send to Watch via WatchConnectivity).
 - **Watch app** runs standalone afterwards. With an iPhone-paired (non-cellular) Watch, it
   uses the iPhone's connection (incl. cellular) when off Wi-Fi; with a cellular Watch it
   works fully on its own.
+
+> The Xcode project is still named `SolaredgeApp` (and the targets `SolaredgeApp`,
+> `SolaredgeWatch`, `SolaredgeWidgets`) for build-system stability — these are internal
+> identifiers and never shown to users. The user-facing display names and all in-app
+> strings use **SE Monitor for HA**.
 
 ## Sensors displayed
 
@@ -153,3 +165,35 @@ group** for the access token.
 - 24-hour history can be a sizeable JSON payload over cellular. The request uses
   `minimal_response` and `no_attributes` to keep it small.
 - watchOS background-refresh budgets cap real-world cadence; see "Refresh cadence" above.
+
+## App Store description (template)
+
+A copy-pasteable description for App Store Connect. Tweak as needed; the trademark
+disclaimer at the end should stay.
+
+```
+SE Monitor for HA puts your home solar system on your wrist.
+
+Connect the app once to your Home Assistant instance via Nabu Casa Cloud, point it at
+the power and battery sensors you already have configured (defaults match the popular
+SolarEdge Cloud HA integration), and your Apple Watch will show:
+
+• A solar-power complication for any watch face — circular, inline, corner, or
+  rectangular.
+• A 24-hour battery State-of-Energy chart with up to four battery stacks.
+• A 24-hour power chart for solar production, consumption, and grid flow.
+
+All data flows directly between your Apple Watch and your Home Assistant — nothing is
+sent to any third-party server. Your Long-Lived Access Token is stored only in the
+iOS and watchOS Keychain.
+
+Requirements:
+• A working Home Assistant instance reachable via Nabu Casa Cloud.
+• Power and battery sensors exposed in Home Assistant (the SolarEdge Cloud HA
+  integration is one common source; SolarEdge Modbus integrations work too).
+• A Long-Lived Access Token from your Home Assistant profile.
+
+Disclaimer: SE Monitor for HA is an independent third-party app. It is not
+affiliated with, endorsed by, or sponsored by SolarEdge Technologies, Inc. or the
+Home Assistant project. "SolarEdge" is a trademark of SolarEdge Technologies, Inc.
+```

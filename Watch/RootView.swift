@@ -15,7 +15,7 @@ struct RootView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 6) {
                     Image(systemName: "iphone.gen3").font(.title2)
-                    Text("Open the Solaredge app on iPhone to send config.")
+                    Text("Open SE Monitor for HA on iPhone to send config.")
                         .multilineTextAlignment(.leading)
                         .font(.footnote)
                     Divider()

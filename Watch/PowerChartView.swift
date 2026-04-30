@@ -6,7 +6,7 @@ struct PowerChartView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("SolarEdge Monitor")
+            Text("SE Monitor")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, alignment: .center)

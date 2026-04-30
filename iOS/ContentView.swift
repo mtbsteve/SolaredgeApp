@@ -95,8 +95,16 @@ struct ContentView: View {
                     .disabled(verifying || url.isEmpty || token.isEmpty)
                     Button("Reset entities to defaults", role: .destructive) { resetEntities() }
                 }
+
+                Section {
+                    Text("SE Monitor for HA is an independent third-party app. It is not affiliated with, endorsed by, or sponsored by SolarEdge Technologies, Inc. or the Home Assistant project. \"SolarEdge\" is a trademark of SolarEdge Technologies, Inc.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("About")
+                }
             }
-            .navigationTitle("Solaredge Setup")
+            .navigationTitle("SE Monitor Setup")
         }
     }
 
