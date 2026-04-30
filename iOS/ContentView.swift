@@ -20,7 +20,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Home Assistant") {
+                Section {
                     TextField("https://xxxxx.ui.nabu.casa", text: $url)
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
@@ -28,6 +28,14 @@ struct ContentView: View {
                     SecureField("Long-Lived Access Token", text: $token)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                } header: {
+                    Text("Home Assistant")
+                } footer: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("The token authorises the app to read sensor states from your Home Assistant instance. It is stored in the iOS Keychain on this device and synced once to the Apple Watch over the encrypted WatchConnectivity channel — it never leaves your devices.")
+                        Link("How to create a Long-Lived Access Token →",
+                             destination: URL(string: "https://www.home-assistant.io/docs/authentication/#your-account-profile")!)
+                    }
                 }
 
                 Section {

@@ -21,6 +21,7 @@ targets:
     sources:
       - path: iOS
       - path: Shared
+      - path: iOS/PrivacyInfo.xcprivacy
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mtbsteve.solaredge
@@ -30,6 +31,7 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_ENTITLEMENTS: iOS/SolaredgeApp.entitlements
     dependencies:
@@ -43,6 +45,7 @@ targets:
     sources:
       - path: Watch
       - path: Shared
+      - path: Watch/PrivacyInfo.xcprivacy
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mtbsteve.solaredge.watchkitapp
@@ -54,6 +57,7 @@ targets:
         INFOPLIST_KEY_WKWatchOnly: NO
         INFOPLIST_KEY_WKBackgroundModes: remote-notification
         INFOPLIST_KEY_WKBackgroundTaskIdentifiers: solaredge.refresh
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         TARGETED_DEVICE_FAMILY: "4"
         CODE_SIGN_ENTITLEMENTS: Watch/SolaredgeWatch.entitlements
     dependencies:
@@ -67,12 +71,14 @@ targets:
     sources:
       - path: Widgets
       - path: Shared
+      - path: Widgets/PrivacyInfo.xcprivacy
     info:
       path: Widgets/Info.plist
       properties:
         CFBundleDisplayName: "Solaredge Widgets"
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: NO
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
