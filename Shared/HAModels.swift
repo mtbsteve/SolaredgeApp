@@ -45,6 +45,15 @@ struct HistorySeries: Codable, Equatable {
         batteries: Array(repeating: [], count: AppConfig.batterySlotCount),
         solar: [], consumption: [], grid: []
     )
+
+    /// HA's history endpoint with `minimal_response` only emits state-change events,
+    /// so a value that has been constant since the last change has no recent point.
+    /// Append a synthetic carry-forward point at `date` with the last known value so
+    /// charts extend to the right edge instead of ending mid-axis.
+    static func carryingForward(_ series: [Point], to date: Date) -> [Point] {
+        guard let last = series.last, date > last.t else { return series }
+        return series + [Point(t: date, v: last.v)]
+    }
 }
 
 struct AnyCodable: Codable {

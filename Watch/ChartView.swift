@@ -7,8 +7,11 @@ struct ChartView: View {
     private static let slotColors: [Color] = [.green, .blue, .orange, .pink]
 
     private var configuredSlots: [(index: Int, points: [HistorySeries.Point])] {
-        store.history.batteries.enumerated()
-            .compactMap { (i, pts) in pts.isEmpty ? nil : (i, pts) }
+        let now = Date()
+        return store.history.batteries.enumerated()
+            .compactMap { (i, pts) in
+                pts.isEmpty ? nil : (i, HistorySeries.carryingForward(pts, to: now))
+            }
     }
 
     var body: some View {
