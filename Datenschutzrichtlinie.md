@@ -1,6 +1,6 @@
-# Datenschutzrichtlinie für SE Monitor for HA
+# Datenschutzrichtlinie für SE Monitor for Homeassistant
 
-*Stand: [Bitte vor Veröffentlichung Datum eintragen, z. B. 6. Mai 2026]*
+*Stand: 6.5.2026*
 
 Diese Datenschutzrichtlinie beschreibt, welche Daten die App **SE Monitor for HA** (im
 Folgenden „die App") verarbeitet, wie sie verarbeitet werden und welche Rechte Sie als
@@ -10,12 +10,12 @@ Nutzer:in haben.
 
 Verantwortlich für die Verarbeitung personenbezogener Daten im Zusammenhang mit der App ist:
 
-> **[Bitte ausfüllen: Vor- und Nachname / Firma]**
-> [Straße und Hausnummer]
-> [Postleitzahl, Ort]
-> [Land]
+> **Stephan Schindewolf**
+> HJasensprung 1
+> 76228 Karlsruhe
+> Deutschland
 >
-> E-Mail: [Bitte ausfüllen]
+> E-Mail: schiwo1@gmail.com
 
 ## 2. Grundsatz: Keine Datenerhebung durch den Anbieter
 
