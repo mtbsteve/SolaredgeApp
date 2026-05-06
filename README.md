@@ -11,6 +11,9 @@ Nabu Casa Cloud.
 > the name is used here only to describe the third-party Home Assistant integrations
 > this app reads sensor values from.
 
+**Datenschutz / Privacy policy:** <https://mtbsteve.github.io/SolaredgeApp/Datenschutzrichtlinie.html>
+([Markdown source](Datenschutzrichtlinie.md))
+
 - **iOS companion** is for one-time setup only (paste Home Assistant URL + Long-Lived Access
   Token, send to Watch via WatchConnectivity).
 - **Watch app** runs standalone afterwards. With an iPhone-paired (non-cellular) Watch, it
